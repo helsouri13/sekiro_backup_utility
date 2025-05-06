@@ -62,13 +62,15 @@ def create_gui():
                     selected_zip = listbox.get(listbox.curselection())
                     if selected_zip:
                         zip_file_path = os.path.join(first_folder_path, selected_zip)
-                        try:
-                            with zipfile.ZipFile(zip_file_path, 'r') as zipf:
-                                zipf.extractall(first_folder_path)
-                            messagebox.showinfo("Success", f"Files extracted to: {first_folder_path}")
-                        except zipfile.BadZipFile:
-                            messagebox.showerror("Error", f"The file '{selected_zip}' is not a valid zip file.")
-                        unzip_window.destroy()
+                        confirm = messagebox.askyesno("Confirmation", f"Are you sure you want to restore the backup from '{selected_zip}'?")
+                        if confirm:
+                            try:
+                                with zipfile.ZipFile(zip_file_path, 'r') as zipf:
+                                    zipf.extractall(first_folder_path)
+                                messagebox.showinfo("Success", f"Files extracted to: {first_folder_path}")
+                            except zipfile.BadZipFile:
+                                messagebox.showerror("Error", f"The file '{selected_zip}' is not a valid zip file.")
+                            unzip_window.destroy()
 
                 unzip_window = tk.Toplevel()
                 unzip_window.title("Select Zip File to restore")
@@ -95,7 +97,7 @@ def create_gui():
     root.title("Sekiro Save Backup")
     root.geometry("400x250")
 
-    description = Label(root, text="This GUI will create a backup of Sekiro save filesand allow one to restore these backups as well.", wraplength=350, justify="center")
+    description = Label(root, text="This GUI will create a backup of Sekiro save files and allow one to restore these backups as well.", wraplength=350, justify="center")
     description.pack(pady=20)
 
     backup_button = Button(root, text="Create Backup", command=run_backup)
